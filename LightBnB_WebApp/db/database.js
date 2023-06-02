@@ -184,10 +184,46 @@ const getAllProperties = (options, limit = 10) => {
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function(property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
+  // const propertyId = Object.keys(properties).length + 1;
+  // property.id = propertyId;
+  // properties[propertyId] = property;
+  // return Promise.resolve(property);
+
+
+  const title = property['title'];
+  const description = property['description'];
+  const thumbnailUrl = property['thumbnail_photo_url'];
+  const coverPhotoUrl = property['cover_photo_url'];
+  const costPerNight = property['cost_per_night'];
+  const street = property['street'];
+  const city = property['city'];
+  const province = property['province'];
+  const postCode = property['post_code'];
+  const country = property['country'];
+  const parkingSpaces = property['parking_spaces'];
+  const NumOfBathrooms = property['number_of_bathrooms'];
+  const numOfBedrooms = property['number_of_bedrooms'];
+
+  const query = ` INSERT INTO properties (title, description, thumbnail_photo_url, cover_photo_url, cost_per_night, street, city, province, post_code, country, parking_spaces, number_of_bathrooms, number_of_bedrooms)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;`;
+
+
+
+
+  return pool.query(query,[title, description, thumbnailUrl, coverPhotoUrl, costPerNight, street, city, province, postCode, country, parkingSpaces, NumOfBathrooms, numOfBedrooms])
+    .then(result => {
+      if (!result.rows[0])
+        return null;
+      console.log(result.rows[0]);
+      return result.rows[0];
+
+    })
+    .catch(err => {
+      console.log(err.message);
+    }
+    );
+
+
 };
 
 module.exports = {
